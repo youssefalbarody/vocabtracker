@@ -6,5 +6,6 @@
  * Note: http://localhost:4000 will not work from a GitHub Pages (HTTPS) site due to Mixed Content restrictions.
  */
 const APP_CONFIG = {
-    API_BASE_URL: ''
+    API_BASE_URL: 'https://vocabtracker-backend-production.up.railway.app'
 };
+
