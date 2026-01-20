@@ -823,7 +823,7 @@
                     const id = data[idx].id;
                     const now = new Date().toISOString();
                     const baseUrl = "vocabtracker-backend-production.up.railway.app";
-                    fetch(`${baseUrl}/api/words/validate`, {
+                    fetch(`${baseUrl}/translate`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ word: normalizedLower })
