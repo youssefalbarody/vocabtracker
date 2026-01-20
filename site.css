@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+:root {
+  --color-primary: #007acc;
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #1E1E1E;
+  --color-surface-dark: #2B2B2B;
+  --color-border-dark: #394a56;
+}
+
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+}
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.modal-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.modal-exit-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+}
+.overlay-enter {
+  opacity: 0;
+}
+.overlay-enter-active {
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+.overlay-exit {
+  opacity: 1;
+}
+.overlay-exit-active {
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.material-symbols-outlined#loginSpinner {
+  animation: spin 1s linear infinite;
+}
+.material-symbols-outlined#signupSpinner {
+  animation: spin 1s linear infinite;
+}
