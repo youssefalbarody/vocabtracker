@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="description" content="Login to VocabTracker - Track your personal vocabulary learning journey in English and Arabic"/>
+<meta property="og:title" content="Login - VocabTracker"/>
+<meta property="og:description" content="Login to VocabTracker - Track your personal vocabulary learning journey"/>
+<meta property="og:type" content="website"/>
+<title>Login - VocabTracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="app-config.js?v=2"></script>
+<script src="theme-config.js"></script>
+<link href="site.css" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Modal animations */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95) translateY(-10px);
+            transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+        }
+        .overlay-enter {
+            opacity: 0;
+        }
+        .overlay-enter-active {
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+        .overlay-exit {
+            opacity: 1;
+        }
+        .overlay-exit-active {
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .material-symbols-outlined#loginSpinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#27323a] px-6 md:px-10 py-3 bg-background-light dark:bg-background-dark">
+<div class="flex items-center gap-4 text-primary dark:text-white">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M39.998 35.764C39.9944 35.7463 39.9875 35.7155 39.9748 35.6706C39.9436 35.5601 39.8949 35.4259 39.8346 35.2825C39.8168 35.2403 39.7989 35.1993 39.7813 35.1602C38.5103 34.2887 35.9788 33.0607 33.7095 32.5189C30.9875 31.8691 27.6413 31.4783 24 31.4783C20.3587 31.4783 17.0125 31.8691 14.2905 32.5189C12.0012 33.0654 9.44505 34.3104 8.18538 35.1832C8.17384 35.2075 8.16216 35.233 8.15052 35.2592C8.09919 35.3751 8.05721 35.4886 8.02977 35.589C8.00356 35.6848 8.00039 35.7333 8.00004 35.7388C8.00004 35.739 8 35.7393 8.00004 35.7388C8.00004 35.7641 8.0104 36.0767 8.68485 36.6314C9.34546 37.1746 10.4222 37.7531 11.9291 38.2772C14.9242 39.319 19.1919 40 24 40C28.8081 40 33.0758 39.319 36.0709 38.2772C37.5778 37.7531 38.6545 37.1746 39.3151 36.6314C39.9006 36.1499 39.9857 35.8511 39.998 35.764ZM4.95178 32.7688L21.4543 6.30267C22.6288 4.4191 25.3712 4.41909 26.5457 6.30267L43.0534 32.777C43.0709 32.8052 43.0878 32.8338 43.104 32.8629L41.3563 33.8352C43.104 32.8629 43.1038 32.8626 43.104 32.8629L43.1051 32.865L43.1065 32.8675L43.1101 32.8739L43.1199 32.8918C43.1276 32.906 43.1377 32.9246 43.1497 32.9473C43.1738 32.9925 43.2062 33.0545 43.244 33.1299C43.319 33.2792 43.4196 33.489 43.5217 33.7317C43.6901 34.1321 44 34.9311 44 35.7391C44 37.4427 43.003 38.7775 41.8558 39.7209C40.6947 40.6757 39.1354 41.4464 37.385 42.0552C33.8654 43.2794 29.133 44 24 44C18.867 44 14.1346 43.2794 10.615 42.0552C8.86463 41.4464 7.30529 40.6757 6.14419 39.7209C4.99695 38.7775 3.99999 37.4427 3.99999 35.7391C3.99999 34.8725 4.29264 34.0922 4.49321 33.6393C4.60375 33.3898 4.71348 33.1804 4.79687 33.0311C4.83898 32.9556 4.87547 32.8935 4.9035 32.8471C4.91754 32.8238 4.92954 32.8043 4.93916 32.7889L4.94662 32.777L4.95178 32.7688ZM35.9868 29.004L24 9.77997L12.0131 29.004C12.4661 28.8609 12.9179 28.7342 13.3617 28.6282C16.4281 27.8961 20.0901 27.4783 24 27.4783C27.9099 27.4783 31.5719 27.8961 34.6383 28.6282C35.082 28.7342 35.5339 28.8609 35.9868 29.004Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">VocabTracker</h2>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-white text-sm font-medium hover:text-primary transition-colors" href="about.html">About</a>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center px-4 py-12">
+<div class="w-full max-w-[440px] bg-white dark:bg-surface-dark rounded-xl shadow-2xl p-8 border border-transparent dark:border-white/5">
+<!-- Welcome Header -->
+<div class="mb-8 text-center">
+<div class="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">language_pinyin</span>
+</div>
+<h1 class="text-gray-900 dark:text-white text-3xl font-bold tracking-tight mb-2">Welcome Back</h1>
+<p class="text-gray-600 dark:text-gray-400 text-sm">
+                    Your words are waiting for you
+                </p>
+</div>
+<!-- Login Form -->
+<form id="loginForm" class="space-y-5" data-analytics="login-form">
+<!-- Email Field -->
+<div>
+<label class="block mb-2">
+<span class="text-gray-700 dark:text-gray-200 text-sm font-semibold">Email Address</span>
+<input id="loginEmail" name="email" class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1b2228] border border-gray-300 dark:border-border-dark rounded-lg text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#9aaebc] focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="you@example.com" required type="email" aria-describedby="email-error" autocomplete="email"/>
+<span id="email-error" class="hidden text-red-500 dark:text-red-400 text-xs mt-1" role="alert"></span>
+</label>
+</div>
+<!-- Password Field -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-gray-700 dark:text-gray-200 text-sm font-semibold">Password</span>
+<a class="text-primary text-xs font-semibold hover:underline cursor-pointer" href="#" id="forgotPasswordLink">Forgot password?</a>
+</div>
+<div class="relative">
+<input id="loginPassword" name="password" class="block w-full px-4 py-3 bg-gray-50 dark:bg-[#1b2228] border border-gray-300 dark:border-border-dark rounded-lg text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#9aaebc] focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none pr-12" placeholder="Enter your password" required type="password" aria-describedby="password-error" autocomplete="current-password"/>
+<button id="loginPasswordToggle" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-[#9aaebc] hover:text-primary transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Toggle password visibility">
+<span class="material-symbols-outlined text-xl">visibility</span>
+</button>
+</div>
+<span id="password-error" class="hidden text-red-500 dark:text-red-400 text-xs mt-1" role="alert"></span>
+</div>
+        <!-- Remember Me -->
+        <div class="flex items-center justify-between mb-2">
+          <label class="inline-flex items-center gap-2 select-none">
+            <input id="rememberMe" type="checkbox" class="rounded border-gray-300 text-primary focus:ring-primary"/>
+            <span class="text-gray-700 dark:text-gray-200 text-sm font-semibold">Remember Me</span>
+          </label>
+        </div>
+<div id="login-global-error" class="hidden text-sm text-red-500 dark:text-red-400 mt-1">
+No account found with these details.
+</div>
+<!-- Submit Button -->
+<button id="loginSubmitButton" type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group min-h-[44px]" data-analytics="login-submit">
+<span id="loginButtonText">Login</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform hidden" id="loginSpinner">sync</span>
+<span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform" id="loginArrow">arrow_forward</span>
+</button>
+</form>
+<!-- Social/Alternative Login -->
+<div class="mt-8">
+<div class="relative flex items-center mb-6">
+<div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+<span class="flex-shrink mx-4 text-gray-400 text-xs uppercase tracking-widest font-bold">Or continue with</span>
+<div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button id="loginGoogleButton" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-border-dark rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" aria-label="Sign in with Google" data-analytics="social-login-google">
+<img alt="Google logo" class="w-4 h-4" src="images/google_image.png" loading="lazy"/>
+<span class="text-xs font-semibold dark:text-white">Google</span>
+</button>
+<button id="guestButton" class="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-border-dark rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors min-h-[44px]" aria-label="Continue as guest" data-analytics="guest-login">
+<span class="material-symbols-outlined text-lg text-gray-700 dark:text-white">account_circle</span>
+<span class="text-xs font-semibold dark:text-white">Guest</span>
+</button>  
+</div>
+</div>
+<!-- Footer Link -->
+<div class="mt-10 text-center">
+<p class="text-gray-600 dark:text-gray-400 text-sm">
+                    Don't have an account? 
+                    <a class="text-primary font-bold hover:underline ml-1" href="signup.html">Create an account</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Forgot Password Modal -->
+<div id="forgotPasswordModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm overlay-enter" id="modalOverlay"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-xl shadow-2xl p-8 border border-transparent dark:border-white/5 modal-enter" id="modalContent">
+        <!-- Close Button (X) -->
+        <button type="button" id="closeModalX" class="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Close password reset modal">
+            <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+        
+        <!-- Lock Icon -->
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full">
+                <span class="material-symbols-outlined text-primary text-4xl">lock_reset</span>
+            </div>
+        </div>
+        
+        <!-- Title -->
+        <h2 class="text-gray-900 dark:text-white text-2xl font-bold text-center mb-4">Password reset</h2>
+        
+        <!-- Message -->
+        <p class="text-gray-600 dark:text-gray-400 text-sm text-center mb-8 leading-relaxed">
+            Since this is an early version of the tracker, automated password recovery isn't available just yet. Please reach out if you need help getting back in!
+        </p>
+        
+        <!-- Got it Button -->
+        <button type="button" id="gotItButton" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all">
+            Got it
+        </button>
+    </div>
+</div>
+
+<!-- Service Unavailable Modal -->
+<div id="serviceUnavailableModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm overlay-enter" id="serviceModalOverlay"></div>
+    <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-xl shadow-2xl p-8 border border-transparent dark:border-white/5 modal-enter" id="serviceModalContent">
+        <button type="button" id="closeServiceModalX" class="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Close service unavailable modal">
+            <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+        <div class="flex justify-center mb-6">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full">
+                <span class="material-symbols-outlined text-primary text-4xl">info</span>
+            </div>
+        </div>
+        <h2 class="text-gray-900 dark:text-white text-2xl font-bold text-center mb-4">Service Unavailable</h2>
+        <p class="text-gray-600 dark:text-gray-400 text-sm text-center mb-8 leading-relaxed">
+            Signing in with Google is not available in this early version. Please use your email and password instead.
+        </p>
+        <button type="button" id="serviceGotItButton" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all">
+            Got it
+        </button>
+    </div>
+</div>
+
+<!-- Guest Information Modal -->
+<div id="guestModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4" role="dialog" aria-labelledby="guestModalTitle" aria-modal="true">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm overlay-enter" id="guestModalOverlay"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-xl shadow-2xl p-8 border border-transparent dark:border-white/5 modal-enter" id="guestModalContent">
+        <!-- Close Button (X) -->
+        <button type="button" id="closeGuestModalX" class="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Close guest information modal">
+            <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+        
+        <!-- Guest Icon -->
+        <div class="flex items-center gap-3 mb-4">
+            <div class="inline-flex items-center justify-center w-10 h-10 bg-primary/20 rounded-full">
+                <span class="material-symbols-outlined text-primary text-2xl">person</span>
+            </div>
+            <h2 id="guestModalTitle" class="text-gray-900 dark:text-white text-2xl font-bold">Guest Information</h2>
+        </div>
+        
+        <!-- Message -->
+        <p class="text-red-500 dark:text-red-400 text-sm mb-6 leading-relaxed font-bold">
+            You're in Guest mode. Your progress won't be saved permanently. Please provide basic info to personalize your experience.
+        </p>
+        
+        <!-- Form -->
+        <form id="guestForm" class="space-y-4">
+            <!-- First Name Field -->
+            <div>
+                <label class="block mb-2">
+                    <span class="text-gray-700 dark:text-gray-200 text-sm font-semibold">First Name</span>
+                    <input 
+                        class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1b2228] border border-gray-300 dark:border-border-dark rounded-lg text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#9aaebc] focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" 
+                        placeholder="Enter your first name" 
+                        type="text"
+                        id="guestFirstName"
+                        name="firstName"
+                        required
+                        aria-describedby="firstName-error"
+                        autocomplete="given-name"
+                    />
+                    <span id="firstName-error" class="hidden text-red-500 dark:text-red-400 text-xs mt-1" role="alert"></span>
+                </label>
+            </div>
+            
+            <!-- Last Name Field -->
+            <div>
+                <label class="block mb-2">
+                    <span class="text-gray-700 dark:text-gray-200 text-sm font-semibold">Last Name</span>
+                    <input 
+                        class="mt-1 block w-full px-4 py-3 bg-gray-50 dark:bg-[#1b2228] border border-gray-300 dark:border-border-dark rounded-lg text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-[#9aaebc] focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" 
+                        placeholder="Enter your last name" 
+                        type="text" 
+                        id="guestLastName"
+                        name="lastName"
+                        required
+                        aria-describedby="lastName-error"
+                        autocomplete="family-name"
+                    />
+                    <span id="lastName-error" class="hidden text-red-500 dark:text-red-400 text-xs mt-1" role="alert"></span>
+                </label>
+            </div>
+            
+            <!-- Continue Button -->
+            <button type="submit" id="guestSubmitButton" disabled class="w-full bg-primary/50 hover:bg-primary/50 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 group cursor-not-allowed">
+                <span>Continue</span>
+                <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Simple Footer -->
+<footer class="py-6 text-center text-gray-500 dark:text-gray-500 text-xs">
+<p>© 2024 VocabTracker • Minimal English Learning</p>
+</footer>
+<script src="auth.js"></script>
+<script src="ui.js"></script>
+<script>
+    // Validation Utilities
+    const Validation = {
+      email(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      },
+      
+      showError(elementId, message) {
+        const errorElement = document.getElementById(elementId + '-error');
+        const inputElement = document.getElementById(elementId);
+        if (errorElement) {
+          errorElement.textContent = message;
+          errorElement.classList.remove('hidden');
+        }
+        if (inputElement) {
+          inputElement.classList.add('border-red-500', 'dark:border-red-500');
+        }
+      },
+      
+      hideError(elementId) {
+        const errorElement = document.getElementById(elementId + '-error');
+        const inputElement = document.getElementById(elementId);
+        if (errorElement) {
+          errorElement.classList.add('hidden');
+        }
+        if (inputElement) {
+          inputElement.classList.remove('border-red-500', 'dark:border-red-500');
+        }
+      },
+      
+      validateAge(age) {
+        const numAge = parseInt(age, 10);
+        return !isNaN(numAge) && numAge >= 1 && numAge <= 120;
+      }
+    };
+    
+    const PasswordPolicy = {
+      allowedPattern: /^[a-zA-Z0-9!@#$%^&*()_\-+=]+$/,
+      isAllowed(value) {
+        return this.allowedPattern.test(value);
+      }
+    };
+    
+    const InputFilters = {
+      sanitizeName(value) {
+        return value.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ' -]/g, '');
+      },
+      sanitizeEmail(value) {
+        return value.replace(/[^a-zA-Z0-9@._+-]/g, '');
+      },
+      sanitizePassword(value) {
+        return value.replace(/\s/g, '');
+      }
+    };
+    
+    // Loading State Utilities
+    const LoadingState = {
+      setLoading(button, isLoading) {
+        const buttonText = button.querySelector('#loginButtonText, span:not(.material-symbols-outlined)');
+        const spinner = button.querySelector('#loginSpinner, .material-symbols-outlined#loginSpinner');
+        const arrow = button.querySelector('#loginArrow, .material-symbols-outlined:not(#loginSpinner)');
+        
+        if (isLoading) {
+          button.disabled = true;
+          if (spinner) spinner.classList.remove('hidden');
+          if (arrow) arrow.classList.add('hidden');
+          if (buttonText) buttonText.textContent = 'Logging in...';
+        } else {
+          button.disabled = false;
+          if (spinner) spinner.classList.add('hidden');
+          if (arrow) arrow.classList.remove('hidden');
+          if (buttonText) buttonText.textContent = 'Login';
+        }
+      }
+    };
+    
+    // ===== CACHED DOM ELEMENTS =====
+    
+    // Login Form Elements
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginPasswordToggle = document.getElementById('loginPasswordToggle');
+    const loginSubmitButton = document.getElementById('loginSubmitButton');
+    const loginGlobalError = document.getElementById('login-global-error');
+    const rememberMeCheckbox = document.getElementById('rememberMe');
+    
+    // Forgot Password Modal Elements
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+    const closeModalX = document.getElementById('closeModalX');
+    const gotItButton = document.getElementById('gotItButton');
+    
+    // Guest Modal Elements
+    const guestButton = document.getElementById('guestButton');
+    const guestModal = document.getElementById('guestModal');
+    const guestModalOverlay = document.getElementById('guestModalOverlay');
+    const guestModalContent = document.getElementById('guestModalContent');
+    const closeGuestModalX = document.getElementById('closeGuestModalX');
+    const guestForm = document.getElementById('guestForm');
+    const guestFirstNameInput = document.getElementById('guestFirstName');
+    const guestLastNameInput = document.getElementById('guestLastName');
+    const guestSubmitButton = document.getElementById('guestSubmitButton');
+    
+    const loginGoogleButton = document.getElementById('loginGoogleButton');
+    const serviceUnavailableModal = document.getElementById('serviceUnavailableModal');
+    const serviceModalOverlay = document.getElementById('serviceModalOverlay');
+    const serviceModalContent = document.getElementById('serviceModalContent');
+    const closeServiceModalX = document.getElementById('closeServiceModalX');
+    const serviceGotItButton = document.getElementById('serviceGotItButton');
+    
+    // ===== PASSWORD VISIBILITY TOGGLE =====
+    
+    if (loginPasswordToggle && loginPassword) {
+      loginPasswordToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const icon = loginPasswordToggle.querySelector('span');
+        
+        if (loginPassword.type === 'password') {
+          loginPassword.type = 'text';
+          icon.textContent = 'visibility_off';
+          loginPasswordToggle.setAttribute('aria-label', 'Hide password');
+        } else {
+          loginPassword.type = 'password';
+          icon.textContent = 'visibility';
+          loginPasswordToggle.setAttribute('aria-label', 'Show password');
+        }
+      });
+    }
+    
+    const showLoginGlobalError = (message) => {
+      if (!loginGlobalError) return;
+      loginGlobalError.textContent = message;
+      loginGlobalError.classList.remove('hidden');
+    };
+    
+    const hideLoginGlobalError = () => {
+      if (!loginGlobalError) return;
+      loginGlobalError.classList.add('hidden');
+    };
+    
+    // ===== LOGIN FORM HANDLING =====
+    
+    // Remember Me helpers
+    const REMEMBER_KEYS = { flag: 'rememberMe', creds: 'rememberCredentials' };
+    const applyRememberedCredentials = () => {
+      try {
+        const flag = localStorage.getItem(REMEMBER_KEYS.flag);
+        if (rememberMeCheckbox) rememberMeCheckbox.checked = flag === 'true';
+        const storage = flag === 'true' ? localStorage : sessionStorage;
+        const raw = storage.getItem(REMEMBER_KEYS.creds);
+        if (!raw) return;
+        const creds = JSON.parse(raw);
+        if (creds && typeof creds === 'object') {
+          if (loginEmail && typeof creds.email === 'string') loginEmail.value = creds.email;
+          if (loginPassword && typeof creds.password === 'string') loginPassword.value = creds.password;
+        }
+      } catch {}
+    };
+    applyRememberedCredentials();
+    
+    if (loginForm) {
+      if (loginEmail) {
+        loginEmail.addEventListener('blur', () => {
+          const email = loginEmail.value.trim();
+          if (email && !Validation.email(email)) {
+            Validation.showError('loginEmail', 'Please enter a valid email address');
+          } else {
+            Validation.hideError('loginEmail');
+          }
+        });
+        
+        loginEmail.addEventListener('input', () => {
+          loginEmail.value = InputFilters.sanitizeEmail(loginEmail.value);
+          Validation.hideError('loginEmail');
+          hideLoginGlobalError();
+        });
+      }
+      
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+        let isValid = true;
+        
+        if (!email) {
+          Validation.showError('loginEmail', 'Email is required');
+          isValid = false;
+        } else if (!Validation.email(email)) {
+          Validation.showError('loginEmail', 'Please enter a valid email address');
+          isValid = false;
+        } else {
+          Validation.hideError('loginEmail');
+        }
+        
+        if (!password) {
+          Validation.showError('loginPassword', 'Password is required');
+          isValid = false;
+        } else {
+          Validation.hideError('loginPassword');
+          if (!PasswordPolicy.isAllowed(password)) {
+            Validation.showError('loginPassword', 'This symbol is not allowed in the password.');
+            isValid = false;
+          }
+        }
+        
+        if (!isValid) return;
+        
+        // Persist credentials per Remember Me
+        try {
+          if (rememberMeCheckbox && rememberMeCheckbox.checked) {
+            localStorage.setItem(REMEMBER_KEYS.flag, 'true');
+            localStorage.setItem(REMEMBER_KEYS.creds, JSON.stringify({ email, password }));
+            sessionStorage.removeItem(REMEMBER_KEYS.creds);
+          } else {
+            localStorage.setItem(REMEMBER_KEYS.flag, 'false');
+            sessionStorage.setItem(REMEMBER_KEYS.creds, JSON.stringify({ email, password }));
+            localStorage.removeItem(REMEMBER_KEYS.creds);
+          }
+        } catch {}
+        
+        LoadingState.setLoading(loginSubmitButton, true);
+        
+        try {
+          if (!window.Auth || typeof Auth.authenticate !== 'function') {
+            throw new Error('Login is temporarily unavailable. Please try again later.');
+          }
+          
+          const result = Auth.authenticate(email, password);
+          
+          if (!result.success) {
+            if (result.reason === 'email_not_found') {
+              Validation.showError('loginEmail', 'No account found with this email');
+            } else if (result.reason === 'wrong_password') {
+              Validation.showError('loginPassword', 'Incorrect password');
+            } else {
+              Validation.showError('loginPassword', 'Invalid email or password');
+            }
+            showLoginGlobalError('No account found with these details.');
+            LoadingState.setLoading(loginSubmitButton, false);
+            return;
+          }
+          
+          Auth.setCurrentUser(result.user);
+          hideLoginGlobalError();
+          
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          window.location.href = 'dashboard.html';
+        } catch (error) {
+          Validation.showError('loginPassword', error.message || 'Invalid email or password');
+          showLoginGlobalError('No account found with these details.');
+          LoadingState.setLoading(loginSubmitButton, false);
+        }
+      });
+      
+      if (loginPassword) {
+        loginPassword.addEventListener('input', () => {
+          Validation.hideError('loginPassword');
+          hideLoginGlobalError();
+        });
+      }
+    }
+    
+    // ===== FORGOT PASSWORD MODAL =====
+    
+    if (forgotPasswordLink && forgotPasswordModal && modalOverlay && modalContent) {
+      ModalManager.setupFocusTrap(modalContent);
+      
+      forgotPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        ModalManager.open(forgotPasswordModal, modalOverlay, modalContent);
+      });
+      
+      const closeForgotPasswordModal = () => {
+        ModalManager.close(forgotPasswordModal, modalOverlay, modalContent);
+      };
+      
+      if (closeModalX) closeModalX.addEventListener('click', closeForgotPasswordModal);
+      if (gotItButton) gotItButton.addEventListener('click', closeForgotPasswordModal);
+      
+      if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+          if (e.target === modalOverlay) closeForgotPasswordModal();
+        });
+      }
+    }
+    
+    // ===== GUEST MODAL =====
+    
+    if (guestButton && guestModal && guestModalOverlay && guestModalContent) {
+      ModalManager.setupFocusTrap(guestModalContent);
+      
+      guestButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        ModalManager.open(guestModal, guestModalOverlay, guestModalContent);
+      });
+      
+      const closeGuestModal = () => {
+        ModalManager.close(guestModal, guestModalOverlay, guestModalContent);
+      };
+      
+      if (closeGuestModalX) closeGuestModalX.addEventListener('click', closeGuestModal);
+      
+      if (guestModalOverlay) {
+        guestModalOverlay.addEventListener('click', (e) => {
+          if (e.target === guestModalOverlay) closeGuestModal();
+        });
+      }
+    }
+    
+    // Guest form validation and submission
+    function checkGuestFormFields() {
+      if (!guestFirstNameInput || !guestLastNameInput || !guestSubmitButton) return;
+      
+      const firstName = guestFirstNameInput.value.trim();
+      const lastName = guestLastNameInput.value.trim();
+      
+      const allFilled = firstName !== '' && lastName !== '';
+      
+      if (allFilled) {
+        guestSubmitButton.disabled = false;
+        guestSubmitButton.classList.remove('bg-primary/50', 'hover:bg-primary/50', 'cursor-not-allowed');
+        guestSubmitButton.classList.add('bg-primary', 'hover:bg-primary/90', 'cursor-pointer');
+      } else {
+        guestSubmitButton.disabled = true;
+        guestSubmitButton.classList.remove('bg-primary', 'hover:bg-primary/90', 'cursor-pointer');
+        guestSubmitButton.classList.add('bg-primary/50', 'hover:bg-primary/50', 'cursor-not-allowed');
+      }
+    }
+    
+    if (guestFirstNameInput) {
+      guestFirstNameInput.addEventListener('input', () => {
+        guestFirstNameInput.value = InputFilters.sanitizeName(guestFirstNameInput.value);
+        Validation.hideError('guestFirstName');
+        checkGuestFormFields();
+      });
+    }
+    
+    if (guestLastNameInput) {
+      guestLastNameInput.addEventListener('input', () => {
+        guestLastNameInput.value = InputFilters.sanitizeName(guestLastNameInput.value);
+        Validation.hideError('guestLastName');
+        checkGuestFormFields();
+      });
+    }
+    
+    // Guest form submission
+    if (guestForm) {
+      guestForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const firstName = guestFirstNameInput.value.trim();
+        const lastName = guestLastNameInput.value.trim();
+        
+        let isValid = true;
+        
+        if (!firstName) {
+          Validation.showError('guestFirstName', 'First name is required');
+          isValid = false;
+        }
+        
+        if (!lastName) {
+          Validation.showError('guestLastName', 'Last name is required');
+          isValid = false;
+        }
+        
+        if (!isValid) return;
+        
+        const guestProfile = {
+          firstName,
+          lastName,
+          createdAt: new Date().toISOString(),
+          source: 'login-guest',
+          path: window.location.pathname
+        };
+        
+        try {
+          sessionStorage.setItem('guestMode', 'true');
+          sessionStorage.setItem('guestProfile', JSON.stringify(guestProfile));
+        } catch (error) {
+        }
+        
+        window.location.href = 'dashboard.html';
+      });
+    }
+    
+    if (loginGoogleButton && serviceUnavailableModal && serviceModalOverlay && serviceModalContent) {
+      ModalManager.setupFocusTrap(serviceModalContent);
+      
+      loginGoogleButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        ModalManager.open(serviceUnavailableModal, serviceModalOverlay, serviceModalContent);
+      });
+      
+      const closeServiceModal = () => {
+        ModalManager.close(serviceUnavailableModal, serviceModalOverlay, serviceModalContent);
+      };
+      
+      if (closeServiceModalX) closeServiceModalX.addEventListener('click', closeServiceModal);
+      if (serviceGotItButton) serviceGotItButton.addEventListener('click', closeServiceModal);
+      
+      if (serviceModalOverlay) {
+        serviceModalOverlay.addEventListener('click', (e) => {
+          if (e.target === serviceModalOverlay) closeServiceModal();
+        });
+      }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      
+      if (ModalManager.activeModal) {
+        if (ModalManager.activeModal === forgotPasswordModal) {
+          ModalManager.close(forgotPasswordModal, modalOverlay, modalContent);
+        } else if (ModalManager.activeModal === guestModal) {
+          ModalManager.close(guestModal, guestModalOverlay, guestModalContent);
+        } else if (ModalManager.activeModal === serviceUnavailableModal) {
+          ModalManager.close(serviceUnavailableModal, serviceModalOverlay, serviceModalContent);
+        }
+      }
+    });
+  </script>
+  
+</body></html>

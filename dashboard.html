@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VocabTracker - Streamlined View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="app-config.js?v=2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0e17",
+                        "charcoal": "#131926",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+        .arabic-font {
+            font-family: 'Lexend', sans-serif;
+            letter-spacing: normal;
+        }
+        /* Fullscreen table overlay */
+        #fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        #fullscreen-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        #fullscreen-table-container {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            max-width: 90vw;
+            max-height: 90vh;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-out;
+        }
+        #fullscreen-overlay.active #fullscreen-table-container {
+            transform: scale(1);
+        }
+        .dark #fullscreen-table-container {
+            background: #131926;
+        }
+        body.fullscreen-lock {
+            overflow: hidden;
+        }
+        html, body {
+            overflow-x: hidden;
+        }
+        #table-wrapper {
+            overflow-y: hidden;
+            overflow-x: hidden;
+        }
+        #fullscreen-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(148, 163, 184, 0.35) rgba(15, 23, 42, 0.25);
+        }
+        #fullscreen-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        #fullscreen-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.25);
+        }
+        #fullscreen-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 8px;
+        }
+        @keyframes inputSuccessFlash {
+            0% { box-shadow: 0 0 0 0 rgba(17, 82, 212, 0); }
+            50% { box-shadow: 0 0 0 6px rgba(17, 82, 212, 0.28); }
+            100% { box-shadow: 0 0 0 0 rgba(17, 82, 212, 0); }
+        }
+        .input-success-flash {
+            animation: inputSuccessFlash 880ms ease-out;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center">
+<div class="layout-content-container flex flex-col w-full max-w-[1024px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800/60 px-6 md:px-10 py-5">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.8261 30.5736C16.7203 29.8826 20.2244 29.4783 24 29.4783C27.7756 29.4783 31.2797 29.8826 34.1739 30.5736C36.9144 31.2278 39.9967 32.7669 41.3563 33.8352L24.8486 7.36089C24.4571 6.73303 23.5429 6.73303 23.1514 7.36089L6.64374 33.8352C8.00331 32.7669 11.0856 31.2278 13.8261 30.5736Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M39.998 35.764C39.9944 35.7463 39.9875 35.7155 39.9748 35.6706C39.9436 35.5601 39.8949 35.4259 39.8346 35.2825C39.8168 35.2403 39.7989 35.1993 39.7813 35.1602C38.5103 34.2887 35.9788 33.0607 33.7095 32.5189C30.9875 31.8691 27.6413 31.4783 24 31.4783C20.3587 31.4783 17.0125 31.8691 14.2905 32.5189C12.0012 33.0654 9.44505 34.3104 8.18538 35.1832C8.17384 35.2075 8.16216 35.233 8.15052 35.2592C8.09919 35.3751 8.05721 35.4886 8.02977 35.589C8.00356 35.6848 8.00039 35.7333 8.00004 35.7388C8.00004 35.739 8 35.7393 8.00004 35.7388C8.00004 35.7641 8.0104 36.0767 8.68485 36.6314C9.34546 37.1746 10.4222 37.7531 11.9291 38.2772C14.9242 39.319 19.1919 40 24 40C28.8081 40 33.0758 39.319 36.0709 38.2772C37.5778 37.7531 38.6545 37.1746 39.3151 36.6314C39.9006 36.1499 39.9857 35.8511 39.998 35.764ZM4.95178 32.7688L21.4543 6.30267C22.6288 4.4191 25.3712 4.41909 26.5457 6.30267L43.0534 32.777C43.0709 32.8052 43.0878 32.8338 43.104 32.8629L41.3563 33.8352C43.104 32.8629 43.1038 32.8626 43.104 32.8629L43.1051 32.865L43.1065 32.8675L43.1101 32.8739L43.1199 32.8918C43.1276 32.906 43.1377 32.9246 43.1497 32.9473C43.1738 32.9925 43.2062 33.0545 43.244 33.1299C43.319 33.2792 43.4196 33.489 43.5217 33.7317C43.6901 34.1321 44 34.9311 44 35.7391C44 37.4427 43.003 38.7775 41.8558 39.7209C40.6947 40.6757 39.1354 41.4464 37.385 42.0552C33.8654 43.2794 29.133 44 24 44C18.867 44 14.1346 43.2794 10.615 42.0552C8.86463 41.4464 7.30529 40.6757 6.14419 39.7209C4.99695 38.7775 3.99999 37.4427 3.99999 35.7391C3.99999 34.8725 4.29264 34.0922 4.49321 33.6393C4.60375 33.3898 4.71348 33.1804 4.79687 33.0311C4.83898 32.9556 4.87547 32.8935 4.9035 32.8471C4.91754 32.8238 4.92954 32.8043 4.93916 32.7889L4.94662 32.777L4.95178 32.7688ZM35.9868 29.004L24 9.77997L12.0131 29.004C12.4661 28.8609 12.9179 28.7342 13.3617 28.6282C16.4281 27.8961 20.0901 27.4783 24 27.4783C27.9099 27.4783 31.5719 27.8961 34.6383 28.6282C35.082 28.7342 35.5339 28.8609 35.9868 29.004Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">VocabTracker</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<a href="about.html" class="text-slate-700 dark:text-slate-200 text-sm font-medium hover:text-primary transition-colors">About</a>
+<span id="user-greeting" class="text-slate-900 dark:text-white text-base font-medium">Hi, Youssef</span>
+<button id="logoutButton" class="size-8 rounded-lg border border-slate-200 dark:border-slate-800/60 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center justify-center" aria-label="Logout">
+  <span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+<div class="bg-slate-200 dark:bg-slate-800 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAt1pK8TdlEtmRiEO1zL3wNf6FhQmMov8FpWGlw1WyIthrt1aStSAsCHKB7LVMrDXfJdJPvXkHI9bxIT_01h9SYFwWWikFzMVlFB8i7PhQKZri6a20rftlAwt6xMbl3wXjakoFVdbC_VdXa8IkzZF-0-DwsWNORFxLlqqKVoS_if4fzglEfpBp7nowYtXGszm2o8gwOah8lyWic7nQ9gq4oRNMy7MDixf2xu2RqABMYg6etCognBquTp2a01tHDlJqZl8lMup7nXxHu");'>
+</div>
+</div>
+</header>
+<main class="flex flex-col gap-2 py-8 px-6 md:px-10">
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-2xl @xl:flex-row @xl:items-center bg-white dark:bg-charcoal border border-slate-200 dark:border-slate-800/60 px-6 py-5 overflow-hidden shadow-xl dark:shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+<div class="w-full @xl:w-1/5 bg-center bg-no-repeat aspect-square bg-cover rounded-xl flex items-center justify-center" style="background-image: linear-gradient(135deg, #1152d4 0%, #3b82f6 100%);">
+<span class="material-symbols-outlined text-4xl text-white/90">menu_book</span>
+</div>
+<div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-2 py-2 px-0 @xl:px-8">
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold leading-tight tracking-tight">Your vocabulary</h1>
+<p id="word-count" class="text-slate-500 dark:text-slate-400 text-sm">0 words saved</p>
+<div class="flex items-center gap-3">
+<div class="w-40 md:w-56 h-2 rounded-full bg-slate-300/40 dark:bg-slate-700/40 overflow-hidden shadow-inner">
+<div id="progress-bar" class="h-full bg-gradient-to-r from-primary to-sky-500 transition-[width] duration-200 ease-out rounded-full" style="width: 0%"></div>
+</div>
+<span id="progress-percent" class="text-slate-500 dark:text-slate-400 text-xs">0%</span>
+</div>
+<p id="progress-helper" class="mt-2 text-xs text-slate-500 dark:text-slate-400" style="display: none;">Start by adding your first word</p>
+</div>
+</div>
+</div>
+<div class="py-4">
+<label class="flex flex-col min-w-40 w-full">
+<div id="word-input-wrapper" class="flex w-full flex-1 items-stretch rounded-xl h-[52px] shadow-md border border-slate-200/60 dark:border-slate-800/60 overflow-hidden bg-white dark:bg-charcoal focus-within:ring-1 focus-within:ring-primary/40 focus-within:shadow-[0_0_16px_rgba(17,82,212,0.08)] transition-shadow duration-200">
+<div class="text-slate-200 dark:text-slate-200 flex bg-white dark:bg-charcoal items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input id="word-input" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-charcoal h-full placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:opacity-60 px-4 pl-3 text-[15px] font-medium" placeholder="Type a word and press Enter to add" value=""/>
+</div>
+<div id="input-message" class="mt-2 text-sm min-h-[20px]"></div>
+<div id="enter-hint" class="mt-1 mb-3 text-[10px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">Press Enter to add word</div>
+</label>
+</div>
+<div class="pt-3">
+<div class="bg-white dark:bg-charcoal border border-slate-200 dark:border-slate-800/70 rounded-2xl shadow-xl relative">
+<div id="table-wrapper" class="relative">
+<table class="w-full border-collapse">
+<thead>
+<tr class="border-b border-slate-200 dark:border-slate-700/50 relative dark:bg-slate-800/20">
+<th class="px-6 pt-4 pb-5 text-left text-[11px] font-extrabold text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em] w-1/3">English</th>
+<th class="px-6 pt-4 pb-5 text-left text-[11px] font-extrabold text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em] w-1/4">Word Type</th>
+<th class="px-6 pt-4 pb-5 text-right text-[11px] font-extrabold text-slate-900 dark:text-slate-100 uppercase tracking-[0.2em]">
+<div class="flex items-center justify-end gap-2">
+<span>Arabic</span>
+<button id="expand-btn" class="size-8 rounded-lg border border-slate-200 dark:border-slate-800/60 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">open_in_full</span>
+</button>
+</div>
+</th>
+</tr>
+</thead>
+<tbody id="vocab-tbody" class="divide-y divide-slate-200 dark:divide-slate-700/40">
+<!-- Table rows will be rendered dynamically -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="daily-stats" class="flex items-center justify-center py-8" style="display: none;">
+<div class="flex items-center gap-2.5 text-slate-500 dark:text-slate-300 text-sm font-medium bg-white/90 dark:bg-charcoal/90 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-800 shadow-lg ring-1 ring-green-500/30 leading-relaxed">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+<p id="daily-stats-text">You added 3 new words today</p>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+
+<!-- Fullscreen table overlay -->
+<div id="fullscreen-overlay">
+<div id="fullscreen-table-container" class="bg-white dark:bg-charcoal border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-lg w-full h-full flex flex-col">
+<div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Your Vocabulary</h2>
+<button id="close-fullscreen-btn" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<div id="fullscreen-scroll" class="flex-1 overflow-auto">
+<table class="w-full border-collapse">
+<thead class="sticky top-0 bg-white dark:bg-charcoal z-10">
+<tr class="border-b border-slate-200 dark:border-slate-800">
+<th class="px-6 py-4 text-left text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-[0.15em] w-1/3">English</th>
+<th class="px-6 py-4 text-left text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-[0.15em] w-1/4">Word Type</th>
+<th class="px-6 py-4 text-right text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-[0.15em]">Arabic</th>
+</tr>
+</thead>
+<tbody id="fullscreen-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/50">
+<!-- Fullscreen table rows will be rendered dynamically -->
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<script>
+/**
+ * Vocabulary Dashboard - V1 MVP Functionality
+ * Frontend-only implementation with localStorage/sessionStorage persistence
+ */
+
+(function() {
+    'use strict';
+
+    // ============================================================================
+    // Configuration & State
+    // ============================================================================
+
+    const SCHEMA_VERSION = 1;
+    // Determine if user is logged in (simple check for V1)
+    const isLoggedIn = () => {
+        // Check for a simple flag - can be extended later with real auth
+        return localStorage.getItem('vocabUserLoggedIn') === 'true';
+    };
+    
+
+    // Storage key names
+    const STORAGE_KEYS = {
+        data: 'vocabWords',
+        loggedIn: 'vocabUserLoggedIn',
+        lastDate: 'vocabLastDate',
+        dailyCount: 'vocabDailyCount'
+    };
+
+    // Get appropriate storage based on login status
+    const getStorage = () => {
+        return isLoggedIn() ? localStorage : sessionStorage;
+    };
+    
+    // User-scoped storage helpers (frontend-only)
+    const getUserEmail = () => {
+        try {
+            const localData = localStorage.getItem('userData');
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                if (parsed.email) return String(parsed.email).trim().toLowerCase();
+            }
+            const sessionData = sessionStorage.getItem('userData');
+            if (sessionData) {
+                const parsed = JSON.parse(sessionData);
+                if (parsed.email) return String(parsed.email).trim().toLowerCase();
+            }
+        } catch {}
+        return 'guest';
+    };
+    const getDataKey = () => `${STORAGE_KEYS.data}:${getUserEmail()}`;
+    
+    const isGuestMode = () => {
+        try {
+            return sessionStorage.getItem('guestMode') === 'true';
+        } catch (error) {
+            return false;
+        }
+    };
+
+    // V1 input rule: English letters only (no Arabic, no numbers)
+    // Allowed: A–Z, a–z, spaces, apostrophe, hyphen.
+    const ENGLISH_ONLY_ALLOWED = /^[A-Za-z][A-Za-z\s'-]*$/;
+
+    // ============================================================================
+    // DOM Element Caching
+    // ============================================================================
+
+    const elements = {
+        wordInput: null,
+        inputMessage: null,
+        vocabTbody: null,
+        fullscreenTbody: null,
+        wordCount: null,
+        expandBtn: null,
+            expandBtnFooter: null,
+        fullscreenOverlay: null,
+        closeFullscreenBtn: null,
+        dailyStats: null,
+        dailyStatsText: null,
+        progressBar: null,
+        progressHelper: null,
+        progressPercent: null,
+        userGreeting: null,
+        enterHint: null,
+        
+    };
+
+    // Search state
+    let searchQuery = '';
+
+    // Cache DOM elements after page load
+    const cacheElements = () => {
+        elements.wordInput = document.getElementById('word-input');
+        elements.inputMessage = document.getElementById('input-message');
+        elements.vocabTbody = document.getElementById('vocab-tbody');
+        elements.fullscreenTbody = document.getElementById('fullscreen-tbody');
+        elements.wordCount = document.getElementById('word-count');
+        elements.expandBtn = document.getElementById('expand-btn');
+            elements.expandBtnFooter = document.getElementById('expand-btn-footer');
+        elements.fullscreenOverlay = document.getElementById('fullscreen-overlay');
+        elements.closeFullscreenBtn = document.getElementById('close-fullscreen-btn');
+        elements.dailyStats = document.getElementById('daily-stats');
+        elements.dailyStatsText = document.getElementById('daily-stats-text');
+        elements.progressBar = document.getElementById('progress-bar');
+        elements.progressHelper = document.getElementById('progress-helper');
+        elements.progressPercent = document.getElementById('progress-percent');
+        elements.userGreeting = document.getElementById('user-greeting');
+        elements.logoutButton = document.getElementById('logoutButton');
+        elements.enterHint = document.getElementById('enter-hint');
+        
+    };
+
+    // ============================================================================
+    // Data Management
+    // ============================================================================
+
+    /**
+     * Load vocabulary words from storage
+     * @returns {Array} Array of word objects
+     */
+    const loadWords = () => {
+        try {
+            const storage = getStorage();
+            const stored = storage.getItem(getDataKey());
+            if (stored) {
+                const words = JSON.parse(stored);
+                // Validate data structure
+                return Array.isArray(words) ? words : [];
+            }
+        } catch (error) {
+            console.warn('Failed to load words from storage:', error);
+        }
+        return [];
+    };
+
+    /**
+     * Save vocabulary words to storage
+     * @param {Array} words - Array of word objects
+     */
+    const saveWords = (words) => {
+        try {
+            const storage = getStorage();
+            storage.setItem(getDataKey(), JSON.stringify(words));
+        } catch (error) {
+            console.error('Failed to save words to storage:', error);
+            showMessage('Failed to save word. Storage may be full.', 'error');
+        }
+    };
+
+    /**
+     * Add a new word to the vocabulary list
+     * @param {string} english - English word
+     * @param {string} type - Word type
+     * @param {string} arabic - Arabic translation
+     * @returns {boolean} Success status
+     */
+    const addWord = (english, type, arabic, status = 'accepted') => {
+        if (!english || !type) {
+            return false;
+        }
+
+        const words = loadWords();
+        
+        // Check for duplicates (case-insensitive)
+        const duplicate = words.find(w => 
+            String(w.english).toLowerCase().trim() === english.toLowerCase().trim()
+        );
+        
+        if (duplicate) {
+            showMessage('This word already exists. Please remove it to add another.', 'info');
+            return false;
+        }
+
+        // Create word object
+        const now = new Date().toISOString();
+        const newWord = {
+            id: (typeof crypto !== 'undefined') ? (() => { try { const buf = new Uint8Array(16); crypto.getRandomValues(buf); buf[6]=(buf[6]&0x0f)|0x40; buf[8]=(buf[8]&0x3f)|0x80; const hex=Array.from(buf).map(b=>b.toString(16).padStart(2,'0')); return `${hex.slice(0,4).join('')}-${hex.slice(4,6).join('')}-${hex.slice(6,8).join('')}-${hex.slice(8,10).join('')}-${hex.slice(10,16).join('')}`; } catch { return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`; } })() : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`,
+            english: english.trim().toLowerCase(),
+            type: type.trim(),
+            arabic: arabic == null ? null : String(arabic).trim(),
+            status: status,
+            dateAdded: now,
+            lastUpdated: now,
+            __v: SCHEMA_VERSION
+        };
+
+        words.push(newWord);
+        saveWords(words);
+
+        // Update daily stats
+        updateDailyStats(words);
+
+        return true;
+    };
+
+    /**
+     * Update daily statistics tracking
+     * @param {Array} words - Current words array
+     */
+    const updateDailyStats = (words) => {
+        const storage = getStorage();
+        const today = new Date().toDateString();
+        const lastDate = storage.getItem(STORAGE_KEYS.lastDate);
+        
+        let dailyCount = 0;
+        if (lastDate === today) {
+            dailyCount = parseInt(storage.getItem(STORAGE_KEYS.dailyCount) || '0', 10) + 1;
+        } else {
+            dailyCount = 1;
+            storage.setItem(STORAGE_KEYS.lastDate, today);
+        }
+        
+        storage.setItem(STORAGE_KEYS.dailyCount, dailyCount.toString());
+    };
+
+    // ============================================================================
+    // UI Rendering
+    // ============================================================================
+
+    /**
+     * Render a single table row
+     * @param {Object} word - Word object
+     * @returns {string} HTML string for table row
+     */
+    const renderWordRow = (word, inlineDelete = false) => {
+        const e = String(word.english || '').trim();
+        const displayEnglish = e ? e.charAt(0).toUpperCase() + e.slice(1) : '';
+        const phonetic = `/${escapeHtml(String(e).toLowerCase())}/`;
+        const status = String(word.status || 'accepted').toLowerCase();
+        const rowStateClasses = status === 'pending' ? 'opacity-70' : (status === 'error' ? 'opacity-80' : '');
+        const isArabicUnknown = word.arabic == null || String(word.arabic).toLowerCase() === 'unknown';
+        const arabicTone = status === 'error' ? 'text-red-400' : (isArabicUnknown ? 'text-slate-400' : 'text-sky-400');
+        const arabicCellBase = `arabic-font text-lg text-right`;
+        const arabicCell = inlineDelete
+            ? `<td class="px-6 py-8 ${arabicCellBase} relative" dir="rtl">
+                    <span class="${arabicTone}">${escapeHtml(word.arabic ?? 'unknown')}</span>
+                    <button class="inline-delete-btn opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute left-4 top-1/2 -translate-y-1/2 bg-red-600/80 text-white rounded-lg w-8 h-8 flex items-center justify-center" data-id="${escapeHtml(word.id)}" aria-label="Delete word">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+               </td>`
+            : `<td class="px-6 py-8 ${arabicCellBase}" dir="rtl"><span class="${arabicTone}">${escapeHtml(word.arabic ?? 'unknown')}</span></td>`;
+        return `
+            <tr class="group transition-all duration-200 ease-out odd:bg-slate-800/30 even:bg-slate-800/20 hover:bg-slate-800/50 ${rowStateClasses}" data-id="${escapeHtml(word.id)}" data-status="${escapeHtml(status)}">
+                <td class="px-6 py-8">
+                    <div class="text-slate-900 dark:text-white font-semibold">${escapeHtml(displayEnglish)}</div>
+                    <div class="text-slate-400 dark:text-slate-500 text-xs italic">${phonetic}</div>
+                </td>
+                <td class="px-6 py-8">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${String(word.type || '').toLowerCase()==='unknown' ? 'bg-slate-700/30 text-slate-400 border-slate-600/30' : 'bg-slate-700/40 text-slate-200 border-slate-600/40'} border transition-colors duration-200 hover:bg-sky-500/20">${escapeHtml(word.type || 'unknown')}</span>
+                </td>
+                ${arabicCell}
+            </tr>
+        `;
+    };
+
+    /**
+     * Render empty state message
+     * @returns {string} HTML string for empty state
+     */
+    const renderEmptyState = () => {
+        return `
+            <tr>
+                <td colspan="3" class="px-6 py-12 text-center">
+                    <div class="flex flex-col items-center justify-center gap-4">
+                        <div class="grid grid-cols-2 gap-2 text-slate-400 dark:text-slate-600">
+                            <span class="material-symbols-outlined text-3xl">grid_view</span>
+                            <span class="material-symbols-outlined text-3xl">add</span>
+                        </div>
+                        <p id="table-message" class="text-slate-500 dark:text-slate-400 text-sm">Start building your word list — press Enter to add your first word</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    };
+
+    /**
+     * Render the vocabulary table
+     * @param {boolean} isFullscreen - Whether rendering for fullscreen view
+     */
+    const renderTable = (isFullscreen = false) => {
+        const fullWords = loadWords();
+        let words = [...fullWords];
+        const tbody = isFullscreen ? elements.fullscreenTbody : elements.vocabTbody;
+        const wrapper = document.getElementById('table-wrapper');
+        const deleteBtn = document.getElementById('row-delete-drawer');
+        let hoveredId = null;
+        let collapsedHeightSet = window.__collapsedHeightSet || false;
+        
+        if (!tbody) return;
+
+        // Apply search filter if active (not fullscreen)
+        if (!isFullscreen && searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim();
+            words = words.filter(w => 
+                w.english.toLowerCase().includes(query)
+            );
+        }
+
+        // Sort: fullscreen = A-Z, collapsed = most recent first
+        if (isFullscreen) {
+            // Sort alphabetically by English word (A-Z)
+            words.sort((a, b) => a.english.localeCompare(b.english));
+        } else {
+            // Most recent first (already sorted by dateAdded in reverse)
+            // If search is active, prioritize most recently added matches
+            if (searchQuery.trim()) {
+                // Sort by dateAdded (newest first) for search results
+                words.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            } else {
+                // Default: newest first
+                words.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            }
+            // Collapsed view: render all words; older rows remain in DOM but are visually clipped
+        }
+
+        if (fullWords.length === 0) {
+            tbody.innerHTML = renderEmptyState();
+            if (deleteBtn) {
+                deleteBtn.classList.add('hidden');
+            }
+        } else {
+            let rows = words.map(w => renderWordRow(w, true)).join('');
+            // Dynamic table message when typing a new word not yet added
+            if (!isFullscreen) {
+                const current = (elements.wordInput?.value || '').trim();
+                if (current) {
+                    const exists = fullWords.some(w => w.english.toLowerCase() === current.toLowerCase());
+                    if (!exists) {
+                        rows += `
+                            <tr>
+                                <td colspan="3" class="px-6 py-8 text-center">
+                                    <p id="table-message" class="text-slate-500 dark:text-slate-400 text-sm">This word isn’t in your list yet — press Enter to add it</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+            tbody.innerHTML = rows;
+            
+            if (!isFullscreen && wrapper && !collapsedHeightSet) {
+                const headerRow = wrapper.querySelector('thead tr');
+                const sampleRow = tbody.querySelector('tr[data-id]');
+                if (headerRow && sampleRow) {
+                    const headerH = headerRow.getBoundingClientRect().height;
+                    const rowH = sampleRow.getBoundingClientRect().height;
+                    const totalH = Math.round(headerH + (rowH * 3));
+                    wrapper.style.height = `${totalH}px`;
+                    wrapper.style.minHeight = `${totalH}px`;
+                    wrapper.style.maxHeight = `${totalH}px`;
+                    window.__collapsedHeightSet = true;
+                    collapsedHeightSet = true;
+                }
+            }
+            
+            // Inline delete for both modes
+            const inlineBtns = Array.from(tbody.querySelectorAll('.inline-delete-btn'));
+            inlineBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-id');
+                    if (!id) return;
+                    const data = loadWords();
+                    const next = data.filter(w => String(w.id) !== String(id));
+                    saveWords(next);
+                    updateWordCount();
+                    renderTable(isFullscreen);
+                });
+            });
+        }
+    };
+
+    /**
+     * Update word count display
+     */
+    const updateWordCount = () => {
+        const words = loadWords();
+        const count = words.length;
+        if (elements.wordCount) {
+            elements.wordCount.textContent = `${count} ${count === 1 ? 'word' : 'words'} saved`;
+        }
+        if (elements.progressHelper) {
+            elements.progressHelper.style.display = 'none';
+        }
+        updateProgressBar();
+    };
+
+    /**
+     * Update progress bar (toward 100 words, resets visually at 100)
+     */
+    const updateProgressBar = () => {
+        if (!elements.progressBar) return;
+        
+        const totalCount = loadWords().length;
+        
+        // Calculate progress: if >= 100, show remainder (resets visually)
+        // Total count continues increasing, but bar resets
+        const progressCount = totalCount % 100;
+        const percentage = Math.min(100, (progressCount / 100) * 100);
+        
+        elements.progressBar.style.width = `${percentage}%`;
+        if (elements.progressPercent) {
+            elements.progressPercent.textContent = `${Math.round(percentage)}%`;
+        }
+    };
+
+    /**
+     * Get user's first name from storage or use default
+     * @returns {string} First name
+     */
+    const getUserFirstName = () => {
+        try {
+            // Try to get from signup form storage (if exists)
+            const storage = getStorage();
+            const userData = storage.getItem('userData');
+            if (userData) {
+                const parsed = JSON.parse(userData);
+                if (parsed.firstName) return parsed.firstName;
+            }
+            
+            // Try localStorage first (for logged-in users)
+            const localData = localStorage.getItem('userData');
+            if (localData) {
+                const parsed = JSON.parse(localData);
+                if (parsed.firstName) return parsed.firstName;
+            }
+            
+            // Try sessionStorage
+            const sessionData = sessionStorage.getItem('userData');
+            if (sessionData) {
+                const parsed = JSON.parse(sessionData);
+                if (parsed.firstName) return parsed.firstName;
+            }
+        } catch (error) {
+            console.warn('Failed to load user data:', error);
+        }
+        
+        // Default/fallback name for V1
+        return 'Youssef';
+    };
+
+    /**
+     * Update user greeting display
+     */
+    const updateUserGreeting = () => {
+        if (!elements.userGreeting) return;
+        
+        if (isGuestMode()) {
+            elements.userGreeting.innerHTML = 'Hi &middot; <a href="signup.html" class="text-primary hover:underline font-semibold">Sign up now</a>';
+            return;
+        }
+        
+        const firstName = getUserFirstName();
+        elements.userGreeting.textContent = `Hi, ${firstName}`;
+    };
+
+    /**
+     * Update daily stats display
+     */
+    const updateDailyStatsDisplay = () => {
+        const storage = getStorage();
+        const today = new Date().toDateString();
+        const lastDate = storage.getItem(STORAGE_KEYS.lastDate);
+        
+        if (lastDate === today && elements.dailyStats && elements.dailyStatsText) {
+            const count = parseInt(storage.getItem(STORAGE_KEYS.dailyCount) || '0', 10);
+            if (count > 0) {
+                elements.dailyStatsText.textContent = `You added ${count} new ${count === 1 ? 'word' : 'words'} today`;
+                elements.dailyStats.style.display = 'flex';
+            } else {
+                elements.dailyStats.style.display = 'none';
+            }
+        } else if (elements.dailyStats) {
+            elements.dailyStats.style.display = 'none';
+        }
+    };
+
+    /**
+     * Escape HTML to prevent XSS
+     * @param {string} text - Text to escape
+     * @returns {string} Escaped text
+     */
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+
+    // ============================================================================
+    // Message Display
+    // ============================================================================
+
+    /**
+     * Show inline message to user
+     * @param {string} message - Message text
+     * @param {string} type - Message type: 'success', 'error', 'warning', 'info'
+     */
+    const showMessage = (message, type = 'info') => {
+        if (!elements.inputMessage) return;
+
+        const colors = {
+            success: 'text-green-600 dark:text-green-400',
+            error: 'text-red-600 dark:text-red-400',
+            warning: 'text-yellow-600 dark:text-yellow-400',
+            info: 'text-slate-600 dark:text-slate-400'
+        };
+
+        elements.inputMessage.textContent = message;
+        elements.inputMessage.className = `mt-2 text-sm min-h-[20px] ${colors[type] || colors.info}`;
+
+        if (type !== 'error') {
+            const duration = type === 'success' ? 1800 : 5000;
+            setTimeout(() => {
+                if (elements.inputMessage) {
+                    elements.inputMessage.textContent = '';
+                }
+            }, duration);
+        }
+    };
+
+    const clearMessage = () => {
+        if (elements.inputMessage) {
+            elements.inputMessage.textContent = '';
+        }
+    };
+
+    // ============================================================================
+    // Input Handling
+    // ============================================================================
+
+    /**
+     * Remove any disallowed characters from input.
+     * Prevents Arabic + numbers by stripping them out.
+     * @param {string} value
+     * @returns {string}
+     */
+    const sanitizeEnglishInput = (value) => {
+        const cleaned = value.replace(/[^A-Za-z\s'-]/g, '');
+        return cleaned.replace(/\s+/g, ' ').trim();
+    };
+    const isObviousNonsense = (value) => {
+        const v = value.replace(/\s+/g, '');
+        if (v.length >= 4) {
+            const allSame = new Set(v.toLowerCase().split('')).size === 1;
+            if (allSame) return true;
+        }
+        return false;
+    };
+    const generateUUID = () => {
+        try {
+            const buf = new Uint8Array(16);
+            crypto.getRandomValues(buf);
+            buf[6] = (buf[6] & 0x0f) | 0x40;
+            buf[8] = (buf[8] & 0x3f) | 0x80;
+            const hex = Array.from(buf).map(b => b.toString(16).padStart(2, '0'));
+            return `${hex.slice(0,4).join('')}-${hex.slice(4,6).join('')}-${hex.slice(6,8).join('')}-${hex.slice(8,10).join('')}-${hex.slice(10,16).join('')}`;
+        } catch {
+            return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`;
+        }
+    };
+
+    /**
+     * Handle adding a new word
+     * @param {string} inputValue - Input field value
+     * @returns {boolean} Success status
+     */
+    const handleAddWord = (inputValue) => {
+        clearMessage();
+
+        const cleaned = sanitizeEnglishInput(inputValue);
+        if (!cleaned) return false;
+
+        const baseValid = ENGLISH_ONLY_ALLOWED.test(cleaned);
+        const nonsense = isObviousNonsense(cleaned);
+
+        const normalizedLower = cleaned.toLowerCase();
+        const success = addWord(normalizedLower, 'unknown', null, 'pending');
+
+        if (success) {
+            // Clear search query after successful add
+            searchQuery = '';
+            if (elements.wordInput) {
+                elements.wordInput.value = '';
+            }
+            renderTable(false);
+            renderTable(true); // Update fullscreen table too
+            updateWordCount();
+            {
+                const data = loadWords();
+                const idx = data.findIndex(w => String(w.english).toLowerCase() === normalizedLower);
+                if (idx !== -1) {
+                    const id = data[idx].id;
+                    const now = new Date().toISOString();
+                    const baseUrl = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.API_BASE_URL) ? APP_CONFIG.API_BASE_URL : '';
+                    fetch(`${baseUrl}/translate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ word: normalizedLower })
+                    })
+                    .then(async (resp) => {
+                        let payload = null;
+                        try {
+                            payload = await resp.json();
+                        } catch {}
+                        const next = loadWords();
+                        const i2 = next.findIndex(w => String(w.id) === String(id));
+                        if (i2 !== -1) {
+                            const status = payload && payload.status ? String(payload.status).toLowerCase() : null;
+                            if (status === 'accepted') {
+                                next[i2].arabic = payload.arabic ?? next[i2].arabic ?? null;
+                                next[i2].type = payload.type ?? next[i2].type ?? 'unknown';
+                                if (typeof payload.confidence === 'number') {
+                                    next[i2].confidence = payload.confidence;
+                                }
+                                next[i2].status = 'accepted';
+                            } else if (status === 'error') {
+                                if (payload && typeof payload.confidence === 'number') {
+                                    next[i2].confidence = payload.confidence;
+                                }
+                                next[i2].status = 'error';
+                            } // else keep pending on unclear status
+                            next[i2].lastUpdated = now;
+                            saveWords(next);
+                            renderTable(false);
+                            renderTable(true);
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('validate fetch failed:', err);
+                        // Keep pending state; no UI changes
+                    });
+                }
+            }
+            const wrapperEl = document.getElementById('word-input-wrapper');
+            if (wrapperEl) {
+                wrapperEl.classList.add('input-success-flash');
+                setTimeout(() => {
+                    wrapperEl.classList.remove('input-success-flash');
+                }, 300);
+            }
+            try {
+                const firstRow = elements.vocabTbody?.querySelector('tr');
+                if (firstRow) {
+                    firstRow.classList.add('bg-green-50', 'dark:bg-green-900/10');
+                    setTimeout(() => {
+                        firstRow.classList.remove('bg-green-50', 'dark:bg-green-900/10');
+                    }, 800);
+                }
+            } catch {}
+            return true;
+        }
+
+        return false;
+    };
+
+    // ============================================================================
+    // Fullscreen Table
+    // ============================================================================
+
+    /**
+     * Open fullscreen table view
+     */
+    const openFullscreen = () => {
+        if (!elements.fullscreenOverlay) return;
+
+        renderTable(true);
+        elements.fullscreenOverlay.classList.add('active');
+        document.body.classList.add('fullscreen-lock');
+    };
+
+    /**
+     * Close fullscreen table view
+     */
+    const closeFullscreen = () => {
+        if (!elements.fullscreenOverlay) return;
+
+        elements.fullscreenOverlay.classList.remove('active');
+        document.body.classList.remove('fullscreen-lock');
+    };
+
+    const isFullscreenOpen = () => {
+        return Boolean(elements.fullscreenOverlay?.classList.contains('active'));
+    };
+
+    /**
+     * Handle ESC key to close fullscreen
+     * @param {KeyboardEvent} event - Keyboard event
+     */
+    const handleEscKey = (event) => {
+        if (event.key === 'Escape' && elements.fullscreenOverlay?.classList.contains('active')) {
+            closeFullscreen();
+        }
+    };
+
+    // ============================================================================
+    // Event Listeners
+    // ============================================================================
+
+    /**
+     * Initialize all event listeners
+     */
+    const initEventListeners = () => {
+        // Word input - handle Enter key
+        if (elements.wordInput) {
+            let isProcessing = false;
+
+            elements.wordInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !isProcessing) {
+                    event.preventDefault();
+                    const value = elements.wordInput.value;
+                    
+                    if (value) {
+                        const cleaned = sanitizeEnglishInput(value).trim();
+                        const words = loadWords();
+                        const query = cleaned.toLowerCase();
+                        
+                        // Check if word exists in vocabulary
+                        const existingWord = words.find(w => 
+                            w.english.toLowerCase() === query
+                        );
+                        
+                        if (existingWord) {
+                            // Word already exists - show message, don't add
+                            showMessage('This word already exists. Please remove it to add another.', 'info');
+                            // Clear search but keep input value for user to see
+                            searchQuery = '';
+                            renderTable(false);
+                        } else {
+                            // Word doesn't exist - add it
+                            isProcessing = true;
+                            elements.wordInput.disabled = true;
+
+                            const success = handleAddWord(value);
+                            
+                            if (!success) {
+                                // If add failed, re-enable input
+                                setTimeout(() => {
+                                    isProcessing = false;
+                                    elements.wordInput.disabled = false;
+                                    elements.wordInput.focus();
+                                }, 100);
+                            } else {
+                                // Success - handleAddWord already clears input
+                                setTimeout(() => {
+                                    isProcessing = false;
+                                    elements.wordInput.disabled = false;
+                                    elements.wordInput.focus();
+                                }, 100);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Live search and input sanitization
+            elements.wordInput.addEventListener('input', (event) => {
+                const value = event.target.value;
+                
+                // Live enforcement: strip disallowed chars immediately.
+                const sanitized = sanitizeEnglishInput(value);
+                if (sanitized !== value) {
+                    elements.wordInput.value = sanitized;
+                }
+                
+                // Update search query for live filtering
+                searchQuery = sanitized;
+                
+                // Live search: update table on each keystroke
+                renderTable(false);
+                
+                if (elements.inputMessage?.textContent) {
+                    clearMessage();
+                }
+            });
+
+            // Block invalid characters early when possible (helps IME/paste).
+            elements.wordInput.addEventListener('beforeinput', (event) => {
+                if (event.inputType !== 'insertText' && event.inputType !== 'insertFromPaste') return;
+                const data = typeof event.data === 'string' ? event.data : '';
+                if (!data) return;
+                const cleaned = sanitizeEnglishInput(data);
+                if (cleaned !== data) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+        // Expand button
+        if (elements.expandBtn) {
+            elements.expandBtn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (isFullscreenOpen()) {
+                    closeFullscreen();
+                } else {
+                    openFullscreen();
+                }
+            });
+        }
+        if (elements.expandBtnFooter) {
+            elements.expandBtnFooter.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (isFullscreenOpen()) {
+                    closeFullscreen();
+                } else {
+                    openFullscreen();
+                }
+            });
+        }
+
+        // Close fullscreen button
+        if (elements.closeFullscreenBtn) {
+            elements.closeFullscreenBtn.addEventListener('click', closeFullscreen);
+        }
+
+        // Close fullscreen when clicking overlay background
+        if (elements.fullscreenOverlay) {
+            elements.fullscreenOverlay.addEventListener('click', (event) => {
+                if (event.target === elements.fullscreenOverlay) {
+                    closeFullscreen();
+                }
+            });
+        }
+
+        // ESC key handler
+        document.addEventListener('keydown', handleEscKey);
+        
+        if (elements.logoutButton) {
+            elements.logoutButton.addEventListener('click', () => {
+                try {
+                    sessionStorage.clear();
+                } catch {}
+                const rememberFlag = localStorage.getItem('rememberMe');
+                if (rememberFlag !== 'true') {
+                    localStorage.removeItem('rememberCredentials');
+                    localStorage.removeItem('rememberMe');
+                }
+                if (window.Auth && typeof Auth.logout === 'function') {
+                    Auth.logout();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+    };
+
+    // ============================================================================
+    // Initialization
+    // ============================================================================
+
+    /**
+     * Initialize the dashboard
+     */
+    const init = () => {
+        // Cache DOM elements
+        cacheElements();
+
+        // Wait for DOM to be fully ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (elements.enterHint) elements.enterHint.style.display = 'none';
+                updateUserGreeting();
+                renderTable(false);
+                updateWordCount();
+                updateDailyStatsDisplay();
+                initEventListeners();
+            });
+        } else {
+            if (elements.enterHint) elements.enterHint.style.display = 'none';
+            updateUserGreeting();
+            renderTable(false);
+            updateWordCount();
+            updateDailyStatsDisplay();
+            initEventListeners();
+        }
+    };
+
+    // Start initialization
+    init();
+
+})();
+</script>
+
+</body></html>
