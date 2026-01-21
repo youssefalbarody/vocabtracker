@@ -822,7 +822,10 @@
                 if (idx !== -1) {
                     const id = data[idx].id;
                     const now = new Date().toISOString();
-                    const baseUrl = (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.API_BASE_URL) ? APP_CONFIG.API_BASE_URL : '';
+                    const baseUrl =
+  (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.API_BASE_URL)
+    ? APP_CONFIG.API_BASE_URL
+    : 'https://vocabtracker-backend-production.up.railway.app';
                     fetch(`${baseUrl}/translate`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
